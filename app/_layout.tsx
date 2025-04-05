@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, StyleSheet } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,7 +20,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
 	const colorScheme = useColorScheme();
 	const [loaded] = useFonts({
-		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+		GeistMono: require("../assets/fonts/GeistMono.ttf"),
 	});
 
 	useEffect(() => {
@@ -33,14 +35,31 @@ export default function RootLayout() {
 
 	return (
 		<ThemeProvider
-			value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+			value={colorScheme === "light" ? DarkTheme : DefaultTheme}
 		>
-			<Stack>
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-				<Stack.Screen name="+not-found" />
-			</Stack>
+			<SafeAreaView style={{ flex: 1 }}>
+				<View style={styles.globalContainer}>
+					<Stack>
+						<Stack.Screen
+							name="(tabs)"
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name="(auth)"
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen name="+not-found" />
+					</Stack>
+				</View>
+			</SafeAreaView>
 			<StatusBar style="auto" />
 		</ThemeProvider>
 	);
 }
+
+const styles = StyleSheet.create({
+	globalContainer: {
+		flex: 1,
+		fontFamily: "GeistMono",
+	},
+});
