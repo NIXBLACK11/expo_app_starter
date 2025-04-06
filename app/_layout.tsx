@@ -8,6 +8,7 @@ import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, StyleSheet } from "react-native";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,22 +29,24 @@ export default function RootLayout() {
 
 	return (
 		<ThemeProvider>
-			<SafeAreaView style={{ flex: 1 }}>
-				<View style={styles.globalContainer}>
-					<Stack>
-						<Stack.Screen
-							name="(tabs)"
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name="(auth)"
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen name="+not-found" />
-					</Stack>
-				</View>
-			</SafeAreaView>
-			<StatusBar style="auto" />
+			<NotificationProvider>
+				<SafeAreaView style={{ flex: 1 }}>
+					<View style={styles.globalContainer}>
+						<Stack>
+							<Stack.Screen
+								name="(tabs)"
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="(auth)"
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen name="+not-found" />
+						</Stack>
+					</View>
+				</SafeAreaView>
+				<StatusBar style="auto" />
+			</NotificationProvider>
 		</ThemeProvider>
 	);
 }

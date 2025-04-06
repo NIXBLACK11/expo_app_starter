@@ -1,3 +1,4 @@
+// screens/AuthScreen/LoginComponent.tsx
 import React, { useState } from "react";
 import {
 	View,
@@ -10,21 +11,20 @@ import {
 	Platform,
 	ScrollView,
 } from "react-native";
+import { useNotification } from "@/context/NotificationContext";
 import { useTheme } from "@/context/ThemeContext";
 
 const LoginComponent = () => {
 	const { colors } = useTheme();
+	const { showNotification } = useNotification();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState("");
 
 	const handleLogin = () => {
-		setError("");
-
 		// Basic validation
 		if (!email || !password) {
-			setError("Please enter both email and password");
+			showNotification("Please enter both email and password", "error");
 			return;
 		}
 
@@ -32,8 +32,16 @@ const LoginComponent = () => {
 		setIsLoading(true);
 		setTimeout(() => {
 			setIsLoading(false);
-			// Here you would normally handle actual authentication
-			console.log("Login attempted with:", { email });
+
+			// Simulate success (in a real app, this would be based on API response)
+			const success = Math.random() > 0.3; // 70% chance of success for demo
+
+			if (success) {
+				showNotification("Login successful!", "success");
+				// Handle successful login (e.g., navigation, state update)
+			} else {
+				showNotification("Invalid email or password", "error");
+			}
 		}, 1500);
 	};
 
@@ -41,8 +49,19 @@ const LoginComponent = () => {
 		setIsLoading(true);
 		setTimeout(() => {
 			setIsLoading(false);
-			// Here you would integrate with Google authentication
-			console.log("Google login attempted");
+
+			// Simulate Google auth
+			const success = Math.random() > 0.2; // 80% chance of success for demo
+
+			if (success) {
+				showNotification("Google login successful!", "success");
+				// Handle successful login
+			} else {
+				showNotification(
+					"Google login failed. Please try again.",
+					"error",
+				);
+			}
 		}, 1500);
 	};
 
@@ -56,10 +75,6 @@ const LoginComponent = () => {
 					<Text style={[styles.title, { color: colors.text }]}>
 						Welcome Back
 					</Text>
-
-					{error ? (
-						<Text style={styles.errorText}>{error}</Text>
-					) : null}
 
 					<View
 						style={[
@@ -231,12 +246,6 @@ const styles = StyleSheet.create({
 	},
 	socialButtonText: {
 		fontSize: 16,
-		fontFamily: "GeistMono",
-	},
-	errorText: {
-		color: "red",
-		marginBottom: 10,
-		fontSize: 14,
 		fontFamily: "GeistMono",
 	},
 });
