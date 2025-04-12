@@ -28,3 +28,5 @@ Prompt=>
 #ffffff", tabIconDefault: "
 #000000", tabIconSelected: "
 #ffffff", }, }; Keep these in mind and keep the theme in mind for the later components I will tell you to make and i like this style a lot"
+
+https://tailscan.com/colors

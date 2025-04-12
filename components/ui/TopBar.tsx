@@ -9,8 +9,10 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
 import { useNavigationState } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 export const TopBar = () => {
+	const router = useRouter();
 	const { colors } = useTheme();
 	const state = useNavigationState((state) => state);
 	const currentRoute = state.routes[state.index];
@@ -43,17 +45,29 @@ export const TopBar = () => {
 				<Text style={[styles.screenName, { color: colors.text }]}>
 					{screenName}
 				</Text>
-				<TouchableOpacity
-					style={styles.searchButton}
-					// onPress={onSearchPress}
-					activeOpacity={0.7}
-				>
-					<Ionicons
-						name="search-outline"
-						size={24}
-						color={colors.icon}
-					/>
-				</TouchableOpacity>
+				<View style={styles.iconsContainer}>
+					<TouchableOpacity
+						style={styles.iconButton}
+						activeOpacity={0.7}
+					>
+						<Ionicons
+							name="search-outline"
+							size={24}
+							color={colors.icon}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.iconButton}
+						onPress={() => router.push("/(profile)")}
+						activeOpacity={0.7}
+					>
+						<Ionicons
+							name="person-sharp"
+							size={24}
+							color={colors.icon}
+						/>
+					</TouchableOpacity>
+				</View>
 			</View>
 		</View>
 	);
@@ -75,6 +89,14 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: "600",
 		fontFamily: "GeistMono",
+	},
+	iconsContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	iconButton: {
+		padding: 4,
+		marginLeft: 16,
 	},
 	searchButton: {
 		padding: 4,

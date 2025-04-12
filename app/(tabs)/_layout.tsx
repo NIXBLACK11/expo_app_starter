@@ -41,7 +41,7 @@ export default function TabLayout() {
 						title: "Shop",
 						tabBarIcon: ({ color, size }) => (
 							<Ionicons
-								name="grid-outline"
+								name="search-outline"
 								size={size}
 								color={color}
 							/>
