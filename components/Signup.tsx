@@ -14,6 +14,7 @@ import {
 import { useNotification } from "@/context/NotificationContext";
 import { useTheme } from "@/context/ThemeContext";
 import { supabase } from "@/lib/supabase";
+import { router } from "expo-router";
 
 AppState.addEventListener("change", (state) => {
 	if (state === "active") {
@@ -67,6 +68,9 @@ const SignupComponent = () => {
 
 		if (error || !session)
 			showNotification("Error in signup try again", "error");
+
+		showNotification("Successfully signed up", "success");
+		router.replace("/(tabs)");
 		setIsLoading(false);
 	};
 

@@ -4,7 +4,7 @@ import React from "react";
 function Layout() {
 	return (
 		<Stack screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="signup" options={{ presentation: "modal" }} />
+			<Stack.Screen name="index" options={{ presentation: "modal" }} />
 		</Stack>
 	);
 }

@@ -14,6 +14,7 @@ import {
 import { useNotification } from "@/context/NotificationContext";
 import { useTheme } from "@/context/ThemeContext";
 import { supabase } from "@/lib/supabase";
+import { router } from "expo-router";
 
 AppState.addEventListener("change", (state) => {
 	if (state === "active") {
@@ -46,6 +47,7 @@ const LoginComponent = () => {
 			showNotification("Failed to login", "error");
 		}
 		showNotification("Successfully logged in", "success");
+		router.replace("/(tabs)");
 		setIsLoading(false);
 	};
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Skeleton } from "moti/skeleton";
-import { MotiView } from "moti";
 import {
 	View,
 	Text,
@@ -16,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
 import { useNotification } from "@/context/NotificationContext";
 import { supabase } from "@/lib/supabase";
+import { router } from "expo-router";
 
 const ProfileScreen = () => {
 	const { colors } = useTheme();
@@ -60,7 +60,6 @@ const ProfileScreen = () => {
 				const {
 					data: { user },
 				} = await supabase.auth.getUser();
-				console.log(user);
 				if (!user) throw new Error("No user on the session!");
 
 				const { data, error, status } = await supabase
@@ -261,25 +260,39 @@ const ProfileScreen = () => {
 	) => {
 		return (
 			<TouchableOpacity
+				disabled={loading}
 				style={[
 					styles.profileItem,
 					{ borderBottomColor: colors.icon + "20" },
 				]}
 				onPress={() => handleEdit(field)}
 			>
-				<View>
+				<View style={{ flex: 1 }}>
 					<Text style={[styles.itemLabel, { color: colors.icon }]}>
 						{label}
 					</Text>
-					<Text style={[styles.itemValue, { color: colors.text }]}>
-						{value}
-					</Text>
+					{loading ? (
+						<Skeleton
+							width={"100%"}
+							height={30}
+							colorMode="light"
+							radius={4}
+						/>
+					) : (
+						<Text
+							style={[styles.itemValue, { color: colors.text }]}
+						>
+							{value}
+						</Text>
+					)}
 				</View>
-				<Ionicons
-					name="chevron-forward"
-					size={20}
-					color={colors.icon}
-				/>
+				{!loading && (
+					<Ionicons
+						name="chevron-forward"
+						size={20}
+						color={colors.icon}
+					/>
+				)}
 			</TouchableOpacity>
 		);
 	};
@@ -313,7 +326,10 @@ const ProfileScreen = () => {
 
 			<TouchableOpacity
 				style={[styles.logoutButton, { borderColor: colors.tint }]}
-				onPress={() => supabase.auth.signOut()}
+				onPress={() => {
+					supabase.auth.signOut();
+					router.replace("/(auth)");
+				}}
 			>
 				<Ionicons
 					name="log-out-outline"

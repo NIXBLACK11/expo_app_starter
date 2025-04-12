@@ -46,16 +46,19 @@ export const TopBar = () => {
 					{screenName}
 				</Text>
 				<View style={styles.iconsContainer}>
-					<TouchableOpacity
-						style={styles.iconButton}
-						activeOpacity={0.7}
-					>
-						<Ionicons
-							name="search-outline"
-							size={24}
-							color={colors.icon}
-						/>
-					</TouchableOpacity>
+					{screenName == "Shop" ? null : (
+						<TouchableOpacity
+							style={styles.iconButton}
+							onPress={() => router.push("/shop")}
+							activeOpacity={0.7}
+						>
+							<Ionicons
+								name="search-outline"
+								size={24}
+								color={colors.icon}
+							/>
+						</TouchableOpacity>
+					)}
 					<TouchableOpacity
 						style={styles.iconButton}
 						onPress={() => router.push("/(profile)")}
