@@ -8,3 +8,6 @@ https://chatgpt.com/c/67f2654b-72fc-800b-ac2d-272f048a4c59
 https://claude.ai/chat/a4e714c8-e9e8-43df-be6b-d88df764c060
 
 npx expo start --android
+
+https://www.youtube.com/watch?v=dU7GwCOgvNY
+https://pocketbase.io/ -> try this
