@@ -1,4 +1,3 @@
-// screens/AuthScreen/SignupComponent.tsx
 import React, { useState } from "react";
 import {
 	View,
@@ -10,22 +9,30 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
+	AppState,
 } from "react-native";
 import { useNotification } from "@/context/NotificationContext";
 import { useTheme } from "@/context/ThemeContext";
+import { supabase } from "@/lib/supabase";
+
+AppState.addEventListener("change", (state) => {
+	if (state === "active") {
+		supabase.auth.startAutoRefresh();
+	} else {
+		supabase.auth.stopAutoRefresh();
+	}
+});
 
 const SignupComponent = () => {
 	const { colors } = useTheme();
 	const { showNotification } = useNotification();
-	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleSignup = () => {
-		// Basic validation
-		if (!name || !email || !password || !confirmPassword) {
+	const handleSignup = async () => {
+		if (!email || !password || !confirmPassword) {
 			showNotification("Please fill in all fields", "error");
 			return;
 		}
@@ -35,14 +42,12 @@ const SignupComponent = () => {
 			return;
 		}
 
-		// Email validation
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
 			showNotification("Please enter a valid email address", "error");
 			return;
 		}
 
-		// Password strength validation
 		if (password.length < 8) {
 			showNotification(
 				"Password must be at least 8 characters long",
@@ -51,21 +56,18 @@ const SignupComponent = () => {
 			return;
 		}
 
-		// Simulate signup process
 		setIsLoading(true);
-		setTimeout(() => {
-			setIsLoading(false);
+		const {
+			data: { session },
+			error,
+		} = await supabase.auth.signUp({
+			email: email,
+			password: password,
+		});
 
-			// Simulate success (in a real app, this would be based on API response)
-			const success = Math.random() > 0.3; // 70% chance of success for demo
-
-			if (success) {
-				showNotification("Account created successfully!", "success");
-				// Handle successful signup (e.g., navigation, state update)
-			} else {
-				showNotification("Email already in use", "error");
-			}
-		}, 1500);
+		if (error || !session)
+			showNotification("Error in signup try again", "error");
+		setIsLoading(false);
 	};
 
 	const handleGoogleSignup = () => {
@@ -98,21 +100,6 @@ const SignupComponent = () => {
 					<Text style={[styles.title, { color: colors.text }]}>
 						Create Account
 					</Text>
-
-					<View
-						style={[
-							styles.inputContainer,
-							{ borderColor: colors.tint },
-						]}
-					>
-						<TextInput
-							style={[styles.input, { color: colors.text }]}
-							placeholder="Full Name"
-							placeholderTextColor={colors.icon}
-							value={name}
-							onChangeText={setName}
-						/>
-					</View>
 
 					<View
 						style={[

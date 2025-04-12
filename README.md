@@ -11,3 +11,20 @@ npx expo start --android
 
 https://www.youtube.com/watch?v=dU7GwCOgvNY
 https://pocketbase.io/ -> try this
+
+https://coolors.co/palette/e4ebfc-c5d3f8-9db7f4-799df0-5986ee-3d6fec-2656dc-214ccd-1739b4-13309b
+
+Prompt=>
+"This is the components you have made export const Colors = { light: { text: "
+#000000", background: "
+#ffffff", tint: "
+#6E1FED", icon: "
+#000000", tabIconDefault: "
+#ffffff", tabIconSelected: "
+#000000", }, dark: { text: "
+#ffffff", background: "
+#000000", tint: "
+#6E1FED", icon: "
+#ffffff", tabIconDefault: "
+#000000", tabIconSelected: "
+#ffffff", }, }; Keep these in mind and keep the theme in mind for the later components I will tell you to make and i like this style a lot"

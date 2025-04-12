@@ -1,4 +1,3 @@
-// screens/AuthScreen/LoginComponent.tsx
 import React, { useState } from "react";
 import {
 	View,
@@ -10,9 +9,19 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
+	AppState,
 } from "react-native";
 import { useNotification } from "@/context/NotificationContext";
 import { useTheme } from "@/context/ThemeContext";
+import { supabase } from "@/lib/supabase";
+
+AppState.addEventListener("change", (state) => {
+	if (state === "active") {
+		supabase.auth.startAutoRefresh();
+	} else {
+		supabase.auth.stopAutoRefresh();
+	}
+});
 
 const LoginComponent = () => {
 	const { colors } = useTheme();
@@ -21,28 +30,23 @@ const LoginComponent = () => {
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleLogin = () => {
-		// Basic validation
+	const handleLogin = async () => {
 		if (!email || !password) {
 			showNotification("Please enter both email and password", "error");
 			return;
 		}
 
-		// Simulate login process
 		setIsLoading(true);
-		setTimeout(() => {
-			setIsLoading(false);
+		const { error } = await supabase.auth.signInWithPassword({
+			email: email,
+			password: password,
+		});
 
-			// Simulate success (in a real app, this would be based on API response)
-			const success = Math.random() > 0.3; // 70% chance of success for demo
-
-			if (success) {
-				showNotification("Login successful!", "success");
-				// Handle successful login (e.g., navigation, state update)
-			} else {
-				showNotification("Invalid email or password", "error");
-			}
-		}, 1500);
+		if (error) {
+			showNotification("Failed to login", "error");
+		}
+		showNotification("Successfully logged in", "success");
+		setIsLoading(false);
 	};
 
 	const handleGoogleLogin = () => {
