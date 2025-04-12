@@ -9,6 +9,8 @@ https://claude.ai/chat/a4e714c8-e9e8-43df-be6b-d88df764c060
 
 npx expo start --android
 
+https://icons.expo.fyi/Index/Ionicons/person-sharp
+
 https://www.youtube.com/watch?v=dU7GwCOgvNY
 https://pocketbase.io/ -> try this
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Skeleton } from "moti/skeleton";
+import { MotiView } from "moti";
 import {
 	View,
 	Text,
@@ -18,6 +20,7 @@ import { supabase } from "@/lib/supabase";
 const ProfileScreen = () => {
 	const { colors } = useTheme();
 	const { showNotification } = useNotification();
+	type EditableField = keyof typeof profile;
 
 	// User profile state
 	const [profile, setProfile] = useState({
@@ -29,8 +32,9 @@ const ProfileScreen = () => {
 
 	// Edit modal state
 	const [isModalVisible, setIsModalVisible] = useState(false);
-	const [editField, setEditField] = useState("");
+	const [editField, setEditField] = useState<EditableField>();
 	const [editValue, setEditValue] = useState("");
+	const [loading, setLoading] = useState(true);
 
 	// Size options for dropdown
 	const sizeOptions = ["Small", "Medium", "Large", "X-Large"];
@@ -49,41 +53,72 @@ const ProfileScreen = () => {
 		"Brazil",
 	];
 
-	// Get user profile on mount
 	useEffect(() => {
-		const fetchProfile = async () => {
+		const getProfile = async () => {
 			try {
+				setLoading(true);
 				const {
 					data: { user },
 				} = await supabase.auth.getUser();
-				if (user) {
-					// Here you would typically fetch the profile from your database
-					// For now, we'll use placeholder data
-					console.log("User found:", user.email);
+				console.log(user);
+				if (!user) throw new Error("No user on the session!");
+
+				const { data, error, status } = await supabase
+					.from("profiles")
+					.select("username, avatar_url, size, country")
+					.eq("id", user.id)
+					.single();
+
+				if (error && status !== 406) throw error;
+
+				if (data) {
+					setProfile({
+						name: data.username ?? "",
+						email: user.email ?? "",
+						size: data.size ?? "",
+						country: data.country ?? "",
+					});
 				}
 			} catch (error) {
-				console.error("Error fetching profile:", error);
+				showNotification("Failed to load profile", "error");
+			} finally {
+				setLoading(false);
 			}
 		};
 
-		fetchProfile();
+		getProfile();
 	}, []);
 
-	const handleEdit = (field) => {
+	const handleEdit = (field: EditableField) => {
 		setEditField(field);
 		setEditValue(profile[field]);
 		setIsModalVisible(true);
 	};
 
 	const handleSave = async () => {
+		if (!editField) return;
 		try {
-			// Update profile in state
-			setProfile({
-				...profile,
-				[editField]: editValue,
-			});
+			const {
+				data: { user },
+			} = await supabase.auth.getUser();
+			if (!user) throw new Error("No user on the session!");
 
-			// Here you would typically update the profile in your database
+			const updates = {
+				id: user.id,
+				username: editField === "name" ? editValue : profile.name,
+				avatar_url: "", // if you plan to add avatars later
+				size: editField === "size" ? editValue : profile.size,
+				country: editField === "country" ? editValue : profile.country,
+				updated_at: new Date(),
+			};
+
+			const { error } = await supabase.from("profiles").upsert(updates);
+			if (error) throw error;
+
+			setProfile((prev) => ({
+				...prev,
+				[editField]: editValue,
+			}));
 
 			showNotification(
 				`${editField.charAt(0).toUpperCase() + editField.slice(1)} updated successfully`,
@@ -96,6 +131,7 @@ const ProfileScreen = () => {
 	};
 
 	const renderEditModal = () => {
+		if (!editField) return null;
 		const isDropdown = editField === "size" || editField === "country";
 		const options = editField === "size" ? sizeOptions : countryOptions;
 
@@ -218,7 +254,11 @@ const ProfileScreen = () => {
 		);
 	};
 
-	const renderProfileItem = (label, value, field) => {
+	const renderProfileItem = (
+		label: string,
+		value: string,
+		field: EditableField,
+	) => {
 		return (
 			<TouchableOpacity
 				style={[
