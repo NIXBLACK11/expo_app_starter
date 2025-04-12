@@ -12,7 +12,7 @@ export const Colors = {
 		background: "#000000",
 		tint: "#214ccd",
 		icon: "#ffffff",
-		tabIconDefault: "#3d6fec",
-		tabIconSelected: "#2656dc",
+		tabIconDefault: "#a3a3a3",
+		tabIconSelected: "#ffffff",
 	},
 };

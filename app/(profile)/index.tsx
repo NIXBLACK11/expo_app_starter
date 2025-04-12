@@ -18,7 +18,7 @@ import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 
 const ProfileScreen = () => {
-	const { colors } = useTheme();
+	const { colors, theme, toggleTheme } = useTheme();
 	const { showNotification } = useNotification();
 	type EditableField = keyof typeof profile;
 
@@ -298,8 +298,9 @@ const ProfileScreen = () => {
 	};
 
 	return (
-		<View
+		<ScrollView
 			style={[styles.container, { backgroundColor: colors.background }]}
+			contentContainerStyle={styles.contentContainer}
 		>
 			<View style={styles.profileHeader}>
 				<View
@@ -322,6 +323,35 @@ const ProfileScreen = () => {
 				{renderProfileItem("Email", profile.email, "email")}
 				{renderProfileItem("Size", profile.size, "size")}
 				{renderProfileItem("Country", profile.country, "country")}
+				<TouchableOpacity
+					style={[
+						styles.profileItem,
+						{ borderBottomColor: colors.icon + "20" },
+					]}
+					onPress={() => {
+						toggleTheme();
+					}}
+				>
+					<View>
+						<Text
+							style={[styles.itemLabel, { color: colors.icon }]}
+						>
+							Appearance
+						</Text>
+						<Text
+							style={[styles.itemValue, { color: colors.text }]}
+						>
+							{theme === "light" ? "Light Mode" : "Dark Mode"}
+						</Text>
+					</View>
+					<View style={styles.themeToggleContainer}>
+						<Ionicons
+							name={theme === "light" ? "sunny" : "moon"}
+							size={20}
+							color={colors.icon}
+						/>
+					</View>
+				</TouchableOpacity>
 			</View>
 
 			<TouchableOpacity
@@ -342,13 +372,16 @@ const ProfileScreen = () => {
 			</TouchableOpacity>
 
 			{renderEditModal()}
-		</View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+	},
+	contentContainer: {
+		paddingBottom: 20,
 	},
 	profileHeader: {
 		alignItems: "center",
@@ -462,6 +495,13 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		fontSize: 16,
 		fontFamily: "GeistMono",
+	},
+	themeToggleContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	chevron: {
+		marginLeft: 8,
 	},
 });
 
